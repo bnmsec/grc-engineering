@@ -1,68 +1,62 @@
 # GRC Engineering
 
-Six compliance automation builds. Each maps a NIST 800-53 control to a working
-pipeline artifact — policy-as-code, CI gates, and automated evidence emission.
+Six compliance automation builds across five NIST 800-53 control families.
 
-The point isn't any single build. It's that the same 5-part anatomy transfers
-across six different control families.
+Same 5-part anatomy each time. Different control family each time.
 
-## Why this exists
-
-Most GRC work is attestation: proving *after the fact* that a control exists,
-via screenshots and Excel. This repo is the other half — encoding the control
-as code so that evidence is generated as a byproduct of the pipeline, not
-reconstructed for an audit.
+---
 
 ## The pattern
 
-Every build has the same 5-part anatomy:
+Every build has the same shape:
 
-1. **Control** — which NIST 800-53 control this build maps to
-2. **Failure mode** — what a misconfiguration looks like in practice
-3. **Check** — what catches the failure (a scanner, a policy, a config rule)
-4. **Evidence** — what artifact proves the check ran and what it found
-5. **Integration** — where the evidence lives so it is *continuous*, not point-in-time
+| | |
+|---|---|
+| **Control** | Which NIST 800-53 control the build maps to |
+| **Failure mode** | What a real misconfiguration looks like |
+| **Check** | What catches the failure — scanner, policy, or config rule |
+| **Evidence** | The artifact that proves the check ran and what it found |
+| **Integration** | Where the evidence lives so it is continuous, not point-in-time |
+
+The point of the repo is not any single build. It is that this anatomy holds
+across six different control families — which means it can be applied to a
+control I haven't worked with before.
+
+---
 
 ## The builds
 
-| # | Build | Control | Family | Tool | Status |
-|---|---|---|---|---|---|
-| 1 | S3 public-access gate | SC-7 | Boundary Protection | Checkov | shipped |
-| 2 | CloudTrail CI gate | AU-2 | Audit Events | GitHub Actions | in progress |
-| 3 | IAM wildcard evidence | AC-3 | Access Enforcement | Python | planned |
-| 4 | MFA Rego policy | IA-2 | Identification & Authentication | OPA/Rego | planned |
-| 5 | Security Hub Config rule | SI-4 | System Monitoring | AWS Config | planned |
-| 6 | Graduate build | *your pick* | *your pick* | *your pick* | planned |
+| # | Build | Control | Family | Tool |
+|---|---|---|---|---|
+| [1](build-01-s3-public-gate) | S3 public-access gate | SC-7 | Boundary Protection | Checkov |
+| [2](build-02-cloudtrail-ci-gate) | CloudTrail CI gate | AU-2 | Audit Events | GitHub Actions |
+| [3](build-03-iam-evidence) | IAM wildcard evidence | AC-3 | Access Enforcement | Python |
+| [4](build-04-mfa-rego) | MFA Rego policy | IA-2 | Identification & Authentication | OPA / Rego |
+| [5](build-05-config-rule) | Security Hub Config rule | SI-4 | System Monitoring | AWS Config |
+| [6](build-06-graduate) | Graduate build | CM-6 | Configuration Settings | Checkov + AWS Config |
 
-Click any build folder for the anatomy, the worksheet answer, and the evidence.
+Each folder contains the working artifact (Terraform, Rego, Python, or workflow
+YAML), a README explaining the anatomy and the worksheet answer, and the
+evidence screenshots.
 
-## What this proves
+---
 
-- **Same pattern, different domains.** Build 1 and Build 5 share almost no
-  tooling but share the same anatomy. That transfer is the point — it means
-  the pattern can be applied to a control I haven't seen before.
-- **Built artifacts, not documentation.** Each build has a public repo folder
-  with code and evidence. Nothing here is a screenshot of a slide.
-- **Continuous where it can be.** CI gates and Config rules generate evidence
-  on a schedule; manual scans are noted as point-in-time.
+## Scope
 
-## What this doesn't prove
+These are demonstration builds against a sandbox AWS account. One control per
+build, not a full program. The worksheet answer in each README explains the
+reasoning behind the build — which is the part that transfers.
 
-These are demonstration builds against a sandbox AWS account, not production
-deployments. The scope is a single control per build, not a full program.
-The worksheet question for each build is deliberately answered — that's the
-reasoning, and the reasoning is what's being tested here.
+---
 
 ## Related
 
-For the risk assessment, POA&M, and third-party risk framework — the
-document-and-analysis side of the portfolio — see
+For the risk assessment, POA&M, and third-party risk framework — the document
+side of the portfolio — see
 [grc-risk-portfolio](https://github.com/YOUR-USERNAME/grc-risk-portfolio).
 
-## Verify it works
+---
 
-```bash
-git clone https://github.com/YOUR-USERNAME/grc-engineering.git
-cd grc-engineering/build-01-s3-public-gate
-pip install checkov
-checkov -f main.tf --framework terraform
+## License
+
+MIT — see [LICENSE](LICENSE).
