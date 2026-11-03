@@ -1,10 +1,10 @@
 # Build 1: S3 Public-Access Gate
 
-This terraform config contained rules for an S3 bucket reading 'acl = "public-read"'.
+This Terraform config contained rules for an S3 bucket reading as 'acl = "public-read"'.
 Checkov catches it with rule CKV_AWS_20. I changed the ACL from public-read to private.
 The scan now passes. Both scans have been committed and show the change made.
 
-This is one of six builds applying the same 5-step pattern to different NIST 800-53 controls.
+This is one of six builds applying the same 5-step anatomy to different NIST 800-53 controls.
 
 ## Anatomy
 
