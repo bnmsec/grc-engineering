@@ -1,35 +1,37 @@
-# Build 1: S3 public-access gate
+# Build 1: S3 Public-Access Gate
 
-A Terraform config declares an S3 bucket with `acl = "public-read"`. Checkov
-catches it (rule CKV_AWS_20). I changed the ACL to `"private"`. The scan now
-passes. Both scans are committed below — `diff scan-before.txt scan-after.txt`
-shows the exact change.
+This terraform config contained rules for an S3 bucket reading 'acl = "public-read"'.
+Checkov catches it with rule CKV_AWS_20. I changed the ACL from public-read to private.
+The scan now passes. Both scans have been committed and show the change made.
 
-One of six builds applying the same 5-part pattern with a different NIST
-800-53 control each time.
+This is one of six builds applying the same 5-step pattern to different NIST 800-53 controls.
 
 ## Anatomy
 
 | Part | This build |
 |---|---|
 | **Control** | SC-7 — Boundary Protection (NIST 800-53) |
-| **Failure mode** | S3 bucket with `acl = "public-read"` — anyone on the internet can read its contents |
+| **Failure mode** | S3 bucket with `acl = "public-read"`. This allows anyone on the internet to read the bucket's contents. |
 | **Check** | Checkov rule CKV_AWS_20 |
 | **Evidence** | `scan-before.txt` (CKV_AWS_20 FAILED) and `scan-after.txt` (CKV_AWS_20 PASSED) |
-| **Integration** | Point-in-time scan committed to this repo. CI enforcement is Build 2. |
+| **Integration** | None. This is a point-in-time snapshot and does not prevent further change. |
 
 ## Worksheet
 
 **Question:** Where would an auditor look to verify this control exists
 *continuously*, not just the day you ran the scan?
 
-**Answer:** Nothing yet. The scan is point-in-time — a snapshot of the file
-the moment I ran it. If the file changes tomorrow, the scan output on disk
-doesn't know. There's no continuous evidence in this build.
+**Answer:** Nowhere. This is a point-in-time scan, a snapshot of the file the 
+moment Checkov was run. If the file is changed, the only way to know is to run the
+scan again manually. There is no continuous scanning evidence.
 
-**Reference:** Continuous evidence lives in a CI pipeline that re-runs the
-check on every commit, or in AWS Config keeping a rule active regardless of
-who's looking. A manual scan proves a moment; CI or Config proves a timeline.
+**Reference:** Continuous evidence lives in a CI pipeline that re-runs the check
+on every commit, or in AWS Config keeping a rule active regardless of who's looking.
+Neither mechanism exists in this build - the scan is manual, the evidence is
+committed text files, and nothing re-runs automatically. Build 2 introduces the
+CI pipeline; Build 5 introduces the Config rule.
+
+
 
 ## Scope
 
